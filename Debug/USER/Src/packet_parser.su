@@ -1,2 +1,0 @@
-../USER/Src/packet_parser.c:13:6:ParsePacket	168	static
-../USER/Src/packet_parser.c:71:6:PrintStatus	80	static
