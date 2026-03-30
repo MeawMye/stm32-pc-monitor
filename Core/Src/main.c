@@ -133,6 +133,7 @@ int main(void)
         systemStatus.ram_valid = 0;
         systemStatus.gpu_valid = 0;
 
+        printf("PACKET = %s\r\n", rxPacketBuf);
         ParsePacket(rxPacketBuf, &systemStatus);
         PrintStatus(&huart1, &systemStatus);
     }
