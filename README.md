@@ -16,16 +16,8 @@ UART ISR → Comm Task → Queue → Data Task → UI Task
 - Packet parsing
 - FreeRTOS-based task structure
 
-### Status
-
-✔ UART communication implemented  
-✔ Packet parsing implemented  
-
-🚧 RTOS task structure in planning  
-🚧 LCD UI not implemented yet  
-
 ---
-- 260330
+260330
 PC-side test script for sending system status packets to STM32 over UART.
 
 Example:
@@ -35,3 +27,19 @@ Run(in cmd):
 python send.py
 
 - pip install -r requirments.txt
+---
+260331
+
+RTOS Integration
+: Before applying FreeRTOS,packet processing was handled directly in the main loop
+after the UART interrupt set a packet-ready flag.
+
+Before:
+UART ISR -> packet_ready flag -> main loop -> ParsePacket() -> PrintStatus()
+
+*After enabling FreeRTOS, the packet handling flow was moved from the main loop to a dedicated communication task.*
+
+After:
+UART ISR -> packet_ready flag -> CommTask -> ParsePacket() -> PrintStatus()
+
+This change separated interrupt-level reception from packet processing logic and made the structure closer to an RTOS-based communication pipeline.
