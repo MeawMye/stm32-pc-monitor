@@ -18,14 +18,17 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include <string.h>
 #include <stdio.h>
 #include "packet_parser.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +49,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
 uint8_t rxByte;
 char rxPacketBuf[RX_BUF_SIZE];
 char rxWorkedBuf[RX_BUF_SIZE];
@@ -56,12 +58,11 @@ volatile uint8_t packet_ready = 0;
 HAL_StatusTypeDef ret;
 SystemStatus systemStatus;
 
-char msg[64];
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -112,6 +113,14 @@ int main(void)
 
   /* USER CODE END 2 */
 
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
@@ -121,24 +130,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (packet_ready)
-    {
-        packet_ready = 0;
 
-        HAL_UART_Transmit(&huart1, (uint8_t*)"\r\n[packet]: ", 11, 100);
-        HAL_UART_Transmit(&huart1, (uint8_t*)rxPacketBuf, strlen(rxPacketBuf), 100);
-        HAL_UART_Transmit(&huart1, (uint8_t*)"\r\n", 2, 100);
-
-        systemStatus.cpu_valid = 0;
-        systemStatus.ram_valid = 0;
-        systemStatus.gpu_valid = 0;
-
-        printf("PACKET = %s\r\n", rxPacketBuf);
-        ParsePacket(rxPacketBuf, &systemStatus);
-        PrintStatus(&huart1, &systemStatus);
-    }
-  /* USER CODE END 3 */
   }
+  /* USER CODE END 3 */
 }
 
 /**
@@ -241,6 +235,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         }
       }
       }
+
         //HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
         HAL_UART_Receive_IT(&huart1, (uint8_t *)&rxByte, 1);
     }
