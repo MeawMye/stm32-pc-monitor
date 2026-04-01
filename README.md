@@ -46,6 +46,7 @@ This change separated interrupt-level reception from packet processing logic and
 
 ----
 260401
+
 RTOS Signal-Based Communication
 :The initial implementation used a polling mechanism with a shared flag(packet_ready) to trigger packet  processing.
 
