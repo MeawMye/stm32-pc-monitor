@@ -1,4 +1,4 @@
-# STM32 PC Monitor
+## STM32 PC Monitor
 
 Real-time PC monitoring device using STM32 and FreeRTOS
 
@@ -43,3 +43,13 @@ After:
 UART ISR -> packet_ready flag -> CommTask -> ParsePacket() -> PrintStatus()
 
 This change separated interrupt-level reception from packet processing logic and made the structure closer to an RTOS-based communication pipeline.
+----
+260401
+RTOS Signal-Based Communication
+:The initial implementation used a polling mechanism with a shared flag(packet_ready) to trigger packet  processing.
+
+After:
+UART ISR -> osSignalSet() -> CommTask(blocked on osSignalWait) -> ParsePacket()
+
+This change elimenates unnecessary polling and allows the task to remain blocked until a packet is fully received, improving efficiency and responsiveness.
+
