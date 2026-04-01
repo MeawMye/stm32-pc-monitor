@@ -39,6 +39,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define RX_BUF_SIZE 128
+#define COMM_PACKET_READY_SIGNAL  (0x01)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -160,23 +161,15 @@ void StartCommTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+    osSignalWait(0x01, osWaitForever);
 
-    if (packet_ready)
-    {
-        packet_ready = 0;
+    systemStatus.cpu_valid = 0;
+    systemStatus.ram_valid = 0;
+    systemStatus.gpu_valid = 0;
 
-        HAL_UART_Transmit(&huart1, (uint8_t*)"\r\n[packet]: ", 11, 100);
-        HAL_UART_Transmit(&huart1, (uint8_t*)rxPacketBuf, strlen(rxPacketBuf), 100);
-        HAL_UART_Transmit(&huart1, (uint8_t*)"\r\n", 2, 100);
-
-        systemStatus.cpu_valid = 0;
-        systemStatus.ram_valid = 0;
-        systemStatus.gpu_valid = 0;
-
-        printf("PACKET = %s\r\n", rxPacketBuf);
-        ParsePacket(rxPacketBuf, &systemStatus);
-        PrintStatus(&huart1, &systemStatus);
-    }
+    printf("PACKET = %s\r\n", rxPacketBuf);
+    ParsePacket(rxPacketBuf, &systemStatus);
+    PrintStatus(&huart1, &systemStatus);
 
     osDelay(1);
   }

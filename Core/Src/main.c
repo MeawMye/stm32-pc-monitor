@@ -53,10 +53,11 @@ uint8_t rxByte;
 char rxPacketBuf[RX_BUF_SIZE];
 char rxWorkedBuf[RX_BUF_SIZE];
 volatile uint16_t rxIndex = 0;
-volatile uint8_t packet_ready = 0;
+//volatile uint8_t packet_ready = 0;
 
 HAL_StatusTypeDef ret;
 SystemStatus systemStatus;
+extern osThreadId CommTaskHandle;
 
 /* USER CODE END PV */
 
@@ -225,7 +226,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
               }
 
               rxPacketBuf[rxIndex] = '\0';
-              packet_ready = 1;
+              osSignalSet(CommTaskHandle, 0x01);
               rxIndex = 0;
             }
           }
