@@ -43,6 +43,7 @@ After:
 UART ISR -> packet_ready flag -> CommTask -> ParsePacket() -> PrintStatus()
 
 This change separated interrupt-level reception from packet processing logic and made the structure closer to an RTOS-based communication pipeline.
+
 ----
 260401
 RTOS Signal-Based Communication
