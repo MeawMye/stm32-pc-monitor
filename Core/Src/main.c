@@ -203,39 +203,37 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
     if (huart->Instance == USART1)
     {
-        if(rxIndex == 0)
+      if(rxByte == '$')
+      {
+        rxIndex = 0;
+        rxWorkedBuf[rxIndex++] = (char)rxByte;
+      }
+      else if(rxIndex > 0)
+      {
+        if(rxIndex < RX_BUF_SIZE -1)
         {
-          if(rxByte == '$')
+          rxWorkedBuf[rxIndex++] = (char)rxByte;
+
+          if(rxByte == '#')
           {
-            rxWorkedBuf[rxIndex++] = (char)rxByte;
+            for(i = 0; i < rxIndex; i++)
+            {
+              rxPacketBuf[i] = rxWorkedBuf[i];
+            }
+
+            rxPacketBuf[rxIndex] = '\0';
+            osSignalSet(CommTaskHandle, 0x01);
+            rxIndex = 0;
           }
         }
-        else
-        {
-          if(rxIndex < RX_BUF_SIZE -1)
-          {
-            rxWorkedBuf[rxIndex++] = (char)rxByte;
-
-            if(rxByte == '#')
-            {
-              for(i = 0; i < rxIndex; i++)
-              {
-                rxPacketBuf[i] = rxWorkedBuf[i];
-              }
-
-              rxPacketBuf[rxIndex] = '\0';
-              osSignalSet(CommTaskHandle, 0x01);
-              rxIndex = 0;
-            }
-          }
         else
         {
           rxIndex = 0;
         }
       }
+    }
         //HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
         HAL_UART_Receive_IT(&huart1, (uint8_t *)&rxByte, 1);
-    }
 }
 
 
