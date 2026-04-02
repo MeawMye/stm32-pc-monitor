@@ -55,7 +55,7 @@ extern char rxWorkedBuf[RX_BUF_SIZE];
 extern HAL_StatusTypeDef ret;
 extern SystemStatus systemStatus;
 extern volatile uint16_t rxIndex;
-extern volatile uint8_t packet_ready;
+//extern volatile uint8_t packet_ready;
 
 extern char msg[64];
 

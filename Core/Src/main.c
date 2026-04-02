@@ -203,8 +203,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
     if (huart->Instance == USART1)
     {
-      if(packet_ready == 0)
-      {
         if(rxIndex == 0)
         {
           if(rxByte == '$')
@@ -235,8 +233,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
           rxIndex = 0;
         }
       }
-      }
-
         //HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
         HAL_UART_Receive_IT(&huart1, (uint8_t *)&rxByte, 1);
     }
