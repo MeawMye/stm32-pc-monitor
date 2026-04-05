@@ -24,7 +24,6 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
-Drivers/Bsp/Component \
 Drivers/Bsp \
 Drivers/STM32F7xx_HAL_Driver/Src \
 Drivers/Utilities \

@@ -75,8 +75,6 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f769i_discovery_lcd.h"
-#include "fonts.h"
-
 
 /** @addtogroup BSP
   * @{
@@ -353,7 +351,7 @@ uint8_t BSP_LCD_InitEx(LCD_OrientationTypeDef orientation)
   /* Initialize the font */
   BSP_LCD_SetFont(&LCD_DEFAULT_FONT);
 
-  Lcd_Driver_Type = LCD_CTRL_OTM8009A;
+  Lcd_Driver_Type = Driver_Type(Lcd_Driver_Type);
 
   /* Stop the DSI module */
   HAL_DSI_Stop(&(hdsi_discovery));
