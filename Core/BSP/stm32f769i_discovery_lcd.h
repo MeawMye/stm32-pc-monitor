@@ -30,9 +30,8 @@
 
 /* Include OTM8009A LCD Driver IC driver code */
 #include "otm8009a.h"
-#include "nt35510.h"
 /* Include NT35510 LCD Driver IC driver code */
-//#include "../Components/nt35510/nt35510.h"
+#include "nt35510.h"
 /* Include ADV7533 HDMI Driver IC driver code */
 //#include "../Components/adv7533/adv7533.h"
    
