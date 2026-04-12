@@ -55,6 +55,8 @@ extern char rxWorkedBuf[RX_BUF_SIZE];
 extern HAL_StatusTypeDef ret;
 extern SystemStatus systemStatus;
 extern volatile uint16_t rxIndex;
+
+extern DSI_HandleTypeDef hdsi_discovery;
 //extern volatile uint8_t packet_ready;
 
 extern char msg[64];
@@ -62,14 +64,16 @@ extern char msg[64];
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId CommTaskHandle;
+osThreadId uiTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
+extern void LCD_UI_Update(SystemStatus *status);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
 void StartCommTask(void const * argument);
+void StartUI_Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -124,6 +128,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(CommTask, StartCommTask, osPriorityNormal, 0, 512);
   CommTaskHandle = osThreadCreate(osThread(CommTask), NULL);
 
+  /* definition and creation of uiTask */
+  osThreadDef(uiTask, StartUI_Task, osPriorityIdle, 0, 512);
+  uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -174,6 +182,29 @@ void StartCommTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartCommTask */
+}
+
+/* USER CODE BEGIN Header_StartUI_Task */
+/**
+* @brief Function implementing the uiTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUI_Task */
+void StartUI_Task(void const * argument)
+{
+  /* USER CODE BEGIN StartUI_Task */
+
+  /* Infinite loop */
+  for(;;)
+  {
+    LCD_UI_Update(&systemStatus);
+
+    HAL_DSI_Refresh(&hdsi_discovery);
+
+    osDelay(200);
+  }
+  /* USER CODE END StartUI_Task */
 }
 
 /* Private application code --------------------------------------------------*/
