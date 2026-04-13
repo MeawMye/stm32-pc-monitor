@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include "packet_parser.h"
 #include "bsp_lcd.h"
+#include "ui.h"
 //#include "otm8009a.h"
 
 /* USER CODE END Includes */
@@ -65,6 +66,7 @@ volatile uint16_t rxIndex = 0;
 HAL_StatusTypeDef ret;
 SystemStatus systemStatus;
 extern osThreadId CommTaskHandle;
+GraphHistory graphHistory;
 
 /* USER CODE END PV */
 
@@ -128,6 +130,12 @@ int main(void)
     Error_Handler();
   }
 
+  BSP_LCD_SelectLayer(0);
+  BSP_LCD_Clear(LCD_COLOR_BLACK);
+  HAL_DSI_Refresh(&hdsi);
+  HAL_Delay(1000);
+
+  GraphHistory_Init(&graphHistory);
 
 
   /* USER CODE END 2 */
@@ -142,13 +150,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  //uint8_t test = 0;
 
-  //uint8_t msg[] = "hello\r\n";
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
 
   }
   /* USER CODE END 3 */

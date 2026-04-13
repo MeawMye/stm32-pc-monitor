@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include "packet_parser.h"
 #include "usart.h"
+#include "ui.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,6 +59,7 @@ extern SystemStatus systemStatus;
 extern volatile uint16_t rxIndex;
 
 extern DSI_HandleTypeDef hdsi_discovery;
+extern GraphHistory graphHistory;
 //extern volatile uint8_t packet_ready;
 
 extern char msg[64];
@@ -179,6 +182,12 @@ void StartCommTask(void const * argument)
     ParsePacket(rxPacketBuf, &systemStatus);
     PrintStatus(&huart1, &systemStatus);
 
+    // test code
+    GraphHistory_Push(&graphHistory, systemStatus.cpu, systemStatus.ram);
+    UI_DrawCPU(&graphHistory);
+    HAL_DSI_Refresh(&hdsi_discovery);
+
+
     osDelay(1);
   }
   /* USER CODE END StartCommTask */
@@ -198,10 +207,10 @@ void StartUI_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+    osSignalWait(0x01, osWaitForever);
+
     LCD_UI_Update(&systemStatus);
-
     HAL_DSI_Refresh(&hdsi_discovery);
-
     osDelay(200);
   }
   /* USER CODE END StartUI_Task */
