@@ -185,8 +185,9 @@ void StartCommTask(void const * argument)
     // test code
     GraphHistory_Push(&graphHistory, systemStatus.cpu, systemStatus.ram);
     UI_DrawCPU(&graphHistory);
-    HAL_DSI_Refresh(&hdsi_discovery);
+    UI_DrawRAM(&graphHistory);
 
+    HAL_DSI_Refresh(&hdsi_discovery);
 
     osDelay(1);
   }
@@ -210,7 +211,7 @@ void StartUI_Task(void const * argument)
     osSignalWait(0x01, osWaitForever);
 
     LCD_UI_Update(&systemStatus);
-    HAL_DSI_Refresh(&hdsi_discovery);
+
     osDelay(200);
   }
   /* USER CODE END StartUI_Task */

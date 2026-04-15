@@ -67,6 +67,7 @@ HAL_StatusTypeDef ret;
 SystemStatus systemStatus;
 extern osThreadId CommTaskHandle;
 GraphHistory graphHistory;
+extern DSI_HandleTypeDef hdsi_discovery;
 
 /* USER CODE END PV */
 
@@ -123,6 +124,7 @@ int main(void)
   BSP_SDRAM_Init();
 
   bsp_lcd_init();
+  HAL_Delay(50);
 
   ret = HAL_UART_Receive_IT(&huart1, &rxByte, 1);
   if(ret != HAL_OK)
@@ -342,6 +344,8 @@ void LCD_UI_Update(SystemStatus *status)
   BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
   BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
   BSP_LCD_DisplayStringAtLine(7, (uint8_t *)buf);
+
+  HAL_DSI_Refresh(&hdsi_discovery);
 }
 /* USER CODE END 4 */
 
