@@ -1,57 +1,44 @@
 ## STM32 PC Monitor
 
-Real-time PC monitoring device using STM32 and FreeRTOS
+Real-time PC monitoring system using STM32F769I-DISCO and FreeRTOS.
 
 ### Architecture
 
-PC → UART → STM32 → LCD
-
-### Data Flow
-
-UART ISR → Comm Task → Queue → Data Task → UI Task
+PC (Python) → UART → STM32 → LCD
 
 ### Features
 
-- UART communication
-- Packet parsing
+- Real-time CPU / RAM usage display
+- Network traffic monitoring (KB/s)
+- Graph visualization with history buffer
 - FreeRTOS-based task structure
+- UART interrupt + packet parsing
 
----
-260330
-PC-side test script for sending system status packets to STM32 over UART.
+### Data Format
 
-Example:
-$CPU:35,RAM:60#
+$CPU:35,RAM:62,NET:120#
 
-Run(in cmd):
-python send.py
+### Data Flow
 
-- pip install -r requirments.txt
----
-260331
+UART ISR → Comm Task → Parser → System Status → UI Task → LCD
 
-RTOS Integration
-: Before applying FreeRTOS,packet processing was handled directly in the main loop
-after the UART interrupt set a packet-ready flag.
+### Implementation Details
 
-Before:
-UART ISR -> packet_ready flag -> main loop -> ParsePacket() -> PrintStatus()
+- Python (psutil) for system data collection
+- UART interrupt-based communication
+- Queue/Signal-based RTOS structure
+- Ring buffer for graph history
+- Dynamic scaling for network graph
 
-*After enabling FreeRTOS, the packet handling flow was moved from the main loop to a dedicated communication task.*
+### Status
 
-After:
-UART ISR -> packet_ready flag -> CommTask -> ParsePacket() -> PrintStatus()
+- CPU / RAM monitoring ✔
+- NET monitoring ✔
+- Graph visualization ✔
+- UI implementation ✔
 
-This change separated interrupt-level reception from packet processing logic and made the structure closer to an RTOS-based communication pipeline.
+### Future Work
 
-----
-260401
-
-RTOS Signal-Based Communication
-:The initial implementation used a polling mechanism with a shared flag(packet_ready) to trigger packet  processing.
-
-After:
-UART ISR -> osSignalSet() -> CommTask(blocked on osSignalWait) -> ParsePacket()
-
-This change elimenates unnecessary polling and allows the task to remain blocked until a packet is fully received, improving efficiency and responsiveness.
-
+- Connection status (Connected / Disconnected)
+- CPU temperature monitoring
+- UI improvements
