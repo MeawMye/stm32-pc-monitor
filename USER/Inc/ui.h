@@ -17,6 +17,7 @@
 
 void UI_DrawCPU(const GraphHistory *history);
 void UI_DrawRAM(const GraphHistory *history);
+void UI_DrawNet(const GraphHistory *history);
 void UI_DrawGraph(const GraphHistory *history);
 
 #endif /* INC_UI_H_ */

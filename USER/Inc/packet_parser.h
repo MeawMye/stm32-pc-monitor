@@ -16,11 +16,11 @@ typedef struct
 
   int cpu;
   int ram;
-  int gpu;
+  int net;
 
   uint8_t cpu_valid;
   uint8_t ram_valid;
-  uint8_t gpu_valid;
+  uint8_t net_valid;
 
 } SystemStatus;
 

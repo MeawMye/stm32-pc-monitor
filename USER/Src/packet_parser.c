@@ -57,10 +57,10 @@ void ParsePacket(char *packet, SystemStatus *status)
               status->ram = atoi(value);
               status->ram_valid = 1;
           }
-          else if (strcmp(key, "GPU") == 0)
+          else if (strcmp(key, "NET") == 0)
           {
-              status->gpu = atoi(value);
-              status->gpu_valid = 1;
+              status->net = atoi(value);
+              status->net_valid = 1;
           }
       }
 
@@ -83,9 +83,9 @@ void PrintStatus(UART_HandleTypeDef *huart, SystemStatus *status)
     HAL_UART_Transmit(&huart1, (uint8_t*)msg, strlen(msg), 100);
   }
 
-  if (status->gpu_valid)
+  if (status->net_valid)
   {
-    sprintf(msg, "GPU=%d ", status->gpu);
+    sprintf(msg, "NET=%d KB/s ", status->net);
     HAL_UART_Transmit(&huart1, (uint8_t*)msg, strlen(msg), 100);
   }
 

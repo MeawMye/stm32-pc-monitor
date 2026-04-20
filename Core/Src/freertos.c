@@ -176,16 +176,17 @@ void StartCommTask(void const * argument)
 
     systemStatus.cpu_valid = 0;
     systemStatus.ram_valid = 0;
-    systemStatus.gpu_valid = 0;
+    systemStatus.net_valid = 0;
 
     printf("PACKET = %s\r\n", rxPacketBuf);
     ParsePacket(rxPacketBuf, &systemStatus);
     PrintStatus(&huart1, &systemStatus);
 
     // test code
-    GraphHistory_Push(&graphHistory, systemStatus.cpu, systemStatus.ram);
+    GraphHistory_Push(&graphHistory, systemStatus.cpu, systemStatus.ram, systemStatus.net);
     UI_DrawCPU(&graphHistory);
     UI_DrawRAM(&graphHistory);
+    UI_DrawNet(&graphHistory);
 
     HAL_DSI_Refresh(&hdsi_discovery);
 
