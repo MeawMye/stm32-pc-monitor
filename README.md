@@ -63,7 +63,7 @@ STM32는 수신한 데이터를 분석하고 최근 측정값을 저장하여 LC
 3. 필요한 Python 패키지를 설치합니다.
 
 ```bash
-pip install psutil pyserial
+pip install -r PCtoMCU/requirements.txt
 ```
 
 4. `PCtoMCU/send.py`에서 사용 환경에 맞는 시리얼 포트를 설정합니다.
@@ -77,11 +77,26 @@ python PCtoMCU/send.py
 
 ```text
 stm32-pc-monitor
-├── Core/          # STM32 초기화 및 FreeRTOS 태스크
-├── USER/          # 패킷 처리, 데이터 기록 및 LCD UI
-├── PCtoMCU/       # PC 시스템 정보 전송 프로그램
-├── Drivers/       # STM32 HAL 및 보드 드라이버
-└── Middlewares/   # FreeRTOS 구성 요소
+├── Application/
+│   ├── Inc/       # graph_history.h, packet_parser.h, ui.h
+│   └── Src/       # graph_history.c, packet_parser.c, ui.c
+├── Core/          # CubeMX 초기화, 인터럽트, FreeRTOS 연결
+├── Drivers/
+│   ├── BSP/
+│   │   ├── STM32F769I-DISCO/
+│   │   │   ├── stm32f769i_discovery.c/.h
+│   │   │   ├── stm32f769i_discovery_lcd.c/.h
+│   │   │   ├── stm32f769i_discovery_sdram.c/.h
+│   │   │   └── stm32f769i_discovery_lcd_board_init.c/.h
+│   │   ├── Components/
+│   │   │   ├── nt35510/        # nt35510.c, nt35510.h
+│   │   │   └── otm8009a/       # otm8009a.c, otm8009a.h
+│   │   └── Utilities/         # fonts.h, font8.c, font12.c, font16.c, font20.c, font24.c
+│   ├── CMSIS/
+│   └── STM32F7xx_HAL_Driver/
+├── Middlewares/   # FreeRTOS 구성 요소
+├── PCtoMCU/       # send.py, requirements.txt
+└── archive/       # 빌드 대상에서 제외한 이전 main 구현
 ```
 
 ## 데이터 처리 흐름

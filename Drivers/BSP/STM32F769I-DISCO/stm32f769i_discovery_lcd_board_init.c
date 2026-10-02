@@ -1,6 +1,6 @@
 
 #include "main.h"
-#include "bsp_lcd.h"
+#include "stm32f769i_discovery_lcd_board_init.h"
 
 
 //#include "dsihost.h"
@@ -34,7 +34,7 @@ static void LTDC_Init(void);
 static void LCD_BriefDisplay(void);
 
 
-void bsp_lcd_init(void)
+void BSP_LCD_BoardInit(void)
 {
     uint8_t lcd_status = LCD_Init();
   if(lcd_status != LCD_OK)

@@ -4,4 +4,4 @@
 #include "stm32f769i_discovery_lcd.h"
 
 
-void bsp_lcd_init(void);
+void BSP_LCD_BoardInit(void);

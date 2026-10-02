@@ -32,7 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "packet_parser.h"
-#include "bsp_lcd.h"
+#include "stm32f769i_discovery_lcd_board_init.h"
 #include "ui.h"
 //#include "otm8009a.h"
 
@@ -123,7 +123,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   BSP_SDRAM_Init();
 
-  bsp_lcd_init();
+  BSP_LCD_BoardInit();
   HAL_Delay(50);
 
   ret = HAL_UART_Receive_IT(&huart1, &rxByte, 1);
