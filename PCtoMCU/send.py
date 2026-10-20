@@ -1,6 +1,8 @@
 import psutil
 import serial
 import time
+import argparse
+from serial.tools import list_ports
 
 
 prev_net_total = None
@@ -39,11 +41,43 @@ def build_packet(cpu, ram, net):
     return f"$CPU:{cpu},RAM:{ram},NET:{net}#"
 
 
-ser = serial.Serial("COM3", 115200)
+def find_port():
+    ports = list(list_ports.comports())
+    for p in ports:
+        if "stlink" in (p.description or "").lower() or "stmicroelectronics" in (p.manufacturer or "").lower():
+            return p.device
+    if len(ports) == 1:
+        return ports[0].device
+    return None
 
-while True:
-    cpu, ram, net = get_system_status()
-    packet = build_packet(cpu, ram, net)
-    ser.write(packet.encode())
-    print(packet)
-    time.sleep(5)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port", help="serial port (e.g. COM5). auto-detect if omitted")
+    parser.add_argument("-b", "--baud", type=int, default=115200)
+    parser.add_argument("-i", "--interval", type=float, default=1.0, help="send period in seconds (min ~0.5)")
+    args = parser.parse_args()
+
+    port = args.port or find_port()
+    if port is None:
+        print("COM port not found. Available ports:")
+        for p in list_ports.comports():
+            print(f"  {p.device}: {p.description}")
+        print("Use: python send.py --port COMx")
+        return
+
+    print(f"Using {port}")
+    with serial.Serial(port, args.baud) as ser:
+        while True:
+            cpu, ram, net = get_system_status()
+            packet = build_packet(cpu, ram, net)
+            ser.write(packet.encode())
+            print(packet)
+            time.sleep(max(0, args.interval - 0.5))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
